@@ -14,7 +14,7 @@
 
 ---
 
-## 🌟 Why GabraOS?
+##  Why GabraOS?
 
 Traditional DevOps was built for **deterministic software**: static code + predictable inputs = expected outputs. 
 
@@ -27,7 +27,7 @@ Modern AI-native distributed applications introduce non-determinism, model drift
 
 ---
 
-## 🏗 System Architecture
+##  System Architecture
 
 ```text
                   ┌────────────────────────┐
@@ -63,7 +63,7 @@ Detailed design specifications can be found in the documentation:
 
 ---
 
-## ⚡ Technology Stack
+## Technology Stack
 
 | Layer | Technology |
 | :--- | :--- |
@@ -81,7 +81,7 @@ Detailed design specifications can be found in the documentation:
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 ### Prerequisites
 - Go `1.22+` installed
@@ -126,7 +126,7 @@ Navigate to `http://localhost:3000` to inspect production health, the knowledge 
 
 ---
 
-## 🛣 Release Roadmap
+## Release Roadmap
 
 - [x] **v0.1 — Foundation**: CLI (`gabra`), API server (`gabra-api`), Event bus, 17 Artifact schema definitions, Agent runtime lifecycle, Continuous Testing flagship loop, Web control center.
 - [ ] **v0.2 — Continuous Testing**: Production log parser, automated LLM regression test synthesizer, persistent engineering memory store.
@@ -137,7 +137,7 @@ Navigate to `http://localhost:3000` to inspect production health, the knowledge 
 
 ---
 
-## 🤝 Community & Contributing
+## Community & Contributing
 
 We welcome contributions from engineers, researchers, and maintainers! Please check out [CONTRIBUTING.md](file:///Users/raphaelgab-momoh/Documents/GabraOs/CONTRIBUTING.md) to get started with design RFCs, architectural decision records (ADRs), and pull requests.
 
