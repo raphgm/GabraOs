@@ -1,0 +1,38 @@
+name: GabraOS CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    name: Build & Test Core Engine
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Dependencies
+        run: go mod download
+
+      - name: Run Unit Tests
+        run: go test -v ./...
+
+      - name: Build Gabra Core CLI
+        run: go build -o bin/gabra ./cmd/gabra
+
+      - name: Build Gabra API Server
+        run: go build -o bin/gabra-api ./cmd/gabra-api
+
+      - name: Verify CLI Execution
+        run: |
+          ./bin/gabra version
+          ./bin/gabra status
+          ./bin/gabra test-autonomous

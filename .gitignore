@@ -1,0 +1,21 @@
+# Binaries
+bin/
+*.exe
+*.exe text
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+*.out
+
+# Node dependencies & Next.js build
+web/node_modules/
+web/.next/
+web/out/
+
+# Go workspace & cache
+.idea/
+.vscode/
+.DS_Store
