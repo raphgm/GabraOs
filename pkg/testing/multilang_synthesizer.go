@@ -3,7 +3,6 @@ package testing
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -44,7 +43,7 @@ func (s *MultiLangSynthesizer) SynthesizeTest(incidentID, rootCause, rawTelemetr
 
 	switch strings.ToLower(string(lang)) {
 	case "python":
-		filePath := fmt.Sprintf("tests/autonomous/test_%s.py", testID)
+		filePath := fmt.Sprintf("tests/autonomous/%s.py", testID)
 		code := fmt.Sprintf(`# Auto-generated regression test synthesized by GabraOS Continuous Testing Engine
 # Incident ID: %s
 # Target Framework: pytest
@@ -52,7 +51,7 @@ func (s *MultiLangSynthesizer) SynthesizeTest(incidentID, rootCause, rawTelemetr
 
 import pytest
 
-def test_regression_%s():
+def %s():
     """
     Telemetry Context:
     %s
@@ -96,7 +95,7 @@ describe('Autonomous Regression Suite - Incident %s', () => {
 		}
 
 	case "java":
-		className := fmt.Sprintf("TestRegression_%s", testID)
+		className := fmt.Sprintf("TestRegression_%s", uuid.New().String()[:8])
 		filePath := fmt.Sprintf("src/test/java/com/gabraos/autonomous/%s.java", className)
 		code := fmt.Sprintf(`package com.gabraos.autonomous;
 
@@ -159,6 +158,5 @@ func TestAutoRegression_%s(t *testing.T) {
 		}
 	}
 
-	_ = time.Now()
 	return &snippet, nil
 }
