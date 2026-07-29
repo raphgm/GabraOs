@@ -1,4 +1,4 @@
-name: GabraOS CI Pipeline
+name: GabraOS CI/CD Pipeline
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-and-test:
-    name: Build & Test Core Engine
+  build-and-test-core:
+    name: Build & Test Core Autonomous Engine
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -22,17 +22,48 @@ jobs:
       - name: Install Dependencies
         run: go mod download
 
-      - name: Run Unit Tests
+      - name: Run Go Unit Tests
         run: go test -v ./...
 
-      - name: Build Gabra Core CLI
+      - name: Build Gabra Core CLI Binary
         run: go build -o bin/gabra ./cmd/gabra
 
-      - name: Build Gabra API Server
+      - name: Build Gabra API Server Binary
         run: go build -o bin/gabra-api ./cmd/gabra-api
 
-      - name: Verify CLI Execution
+      - name: Verify CLI Status & Agent Runtime
         run: |
           ./bin/gabra version
           ./bin/gabra status
-          ./bin/gabra test-autonomous
+          ./bin/gabra agent list
+
+      - name: Verify Multi-Language Test Synthesizer
+        run: |
+          ./bin/gabra test-autonomous --lang go
+          ./bin/gabra test-autonomous --lang python
+          ./bin/gabra test-autonomous --lang typescript
+          ./bin/gabra test-autonomous --lang java
+
+      - name: Verify Neo4j Graph Exporter
+        run: ./bin/gabra graph-export
+
+  build-web-console:
+    name: Build Next.js Engineering Control Center
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Build Web Control Center
+        run: npm run build
