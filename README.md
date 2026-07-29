@@ -99,37 +99,42 @@ go build -o bin/gabra-api ./cmd/gabra-api
 ./bin/gabra agent list
 ```
 
-### 3. Run Continuous Autonomous Testing Cycle
+### 3. Run Continuous Autonomous Testing Cycle (Multi-Language)
+Synthesize regression test suites across **Go**, **Python** (`pytest`), **TypeScript** (`Jest`), and **Java** (`JUnit 5`):
+
 ```bash
-./bin/gabra test-autonomous
+# Synthesize Go regression test
+./bin/gabra test-autonomous --lang go
+
+# Synthesize Python pytest suite
+./bin/gabra test-autonomous --lang python
+
+# Synthesize TypeScript Jest suite
+./bin/gabra test-autonomous --lang typescript
+
+# Synthesize Java JUnit 5 suite
+./bin/gabra test-autonomous --lang java
 ```
 
-Output:
-```text
-==================================================
- Autonomous Regression Test Successfully Generated!
-==================================================
-Incident ID     : inc_8f2a1b9c
-Root Cause      : Null Pointer Dereference in StripeWebhookHandler.go:142
-Test File       : tests/autonomous/test_auto_4e9b2a1c_test.go
-Confidence Score: 98.00%
-==================================================
+### 4. Export Knowledge Graph to Neo4j Cypher
+```bash
+./bin/gabra graph-export
 ```
 
-### 4. Run Engineering Control Center (Web)
+### 5. Run Engineering Control Center (Web)
 ```bash
 cd web
 npm install
 npm run dev
 ```
-Navigate to `http://localhost:3000` to inspect production health, the knowledge graph, and autonomous agent logs.
+Navigate to `http://localhost:3000` to inspect production health, multi-language test generation, the knowledge graph, and autonomous agent logs.
 
 ---
 
 ## Release Roadmap
 
 - [x] **v0.1 — Foundation**: CLI (`gabra`), API server (`gabra-api`), Event bus, 17 Artifact schema definitions, Agent runtime lifecycle, Continuous Testing flagship loop, Web control center.
-- [ ] **v0.2 — Continuous Testing**: Production log parser, automated LLM regression test synthesizer, persistent engineering memory store.
+- [x] **v0.2 — Continuous Testing Expansion**: Production Loki & OTel log parser, multi-language regression test synthesizer (Go, Python, TS/Jest, Java), Cypher script generator, and Neo4j graph exporter.
 - [ ] **v0.3 — Observability**: OpenTelemetry bridge, prompt quality tracking, dataset freshness & embedding drift detector.
 - [ ] **v0.4 — Autonomous Reasoning**: Deployment confidence scoring, risk engine, autonomous canary rollouts.
 - [ ] **v0.5 — Ecosystem**: Plugin SDK (AWS, GCP, K8s, GitHub, OpenAI, MLflow), plugin marketplace.

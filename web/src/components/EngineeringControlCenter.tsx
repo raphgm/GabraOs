@@ -7,19 +7,69 @@ import {
   Activity, 
   Cpu, 
   GitBranch, 
-  AlertTriangle, 
   Zap, 
   Database, 
-  CheckCircle2,
-  Terminal,
-  RefreshCw,
   BrainCircuit,
-  Lock,
-  DollarSign
+  FileCode,
+  Layers,
+  Code
 } from 'lucide-react';
 
 export default function EngineeringControlCenter() {
   const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'agents' | 'testing'>('overview');
+  const [selectedLang, setSelectedLang] = useState<'go' | 'python' | 'typescript' | 'java'>('go');
+
+  const codeSnippets = {
+    go: `package autonomous_tests
+
+import "testing"
+
+// Auto-generated regression test synthesized by GabraOS Continuous Testing Engine
+// Incident ID: inc_8f2a1b9c | Framework: Go testing
+func TestAutoRegression_StripeWebhook(t *testing.T) {
+	t.Log("Verifying fix for production incident: inc_8f2a1b9c")
+	customerID := "cust_12345"
+	if customerID == "" {
+		t.Fatal("expected valid customerID, got empty string")
+	}
+}`,
+    python: `# Auto-generated regression test synthesized by GabraOS Continuous Testing Engine
+# Incident ID: inc_8f2a1b9c | Framework: pytest
+
+import pytest
+
+def test_regression_stripe_webhook():
+    """Verifying fix for production incident: inc_8f2a1b9c"""
+    payload = {"customer_id": "cust_12345", "status": "active"}
+    assert payload.get("customer_id") is not None, "customer_id must not be null"`,
+    typescript: `// Auto-generated regression test synthesized by GabraOS Continuous Testing Engine
+// Incident ID: inc_8f2a1b9c | Framework: Jest / Vitest
+
+describe('Autonomous Regression Suite - Incident inc_8f2a1b9c', () => {
+  it('should handle payload without null dereference error', () => {
+    const payload = { customerId: 'cust_12345', status: 'active' };
+    expect(payload.customerId).toBeDefined();
+    expect(payload.customerId).not.toBeNull();
+  });
+});`,
+    java: `package com.gabraos.autonomous;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Auto-generated regression test synthesized by GabraOS Continuous Testing Engine
+ * Incident ID: inc_8f2a1b9c | Framework: JUnit 5
+ */
+public class TestRegression_StripeWebhook {
+
+    @Test
+    void testRegressionPayloadHandling() {
+        String customerId = "cust_12345";
+        assertNotNull(customerId, "customer_id must not be null");
+    }
+}`
+  };
 
   return (
     <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col">
@@ -33,7 +83,7 @@ export default function EngineeringControlCenter() {
             <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
               GabraOS
             </h1>
-            <p className="text-xs text-indigo-400 font-mono">Autonomous Engineering OS v0.1</p>
+            <p className="text-xs text-indigo-400 font-mono">Continuous Testing Expansion v0.2</p>
           </div>
         </div>
 
@@ -60,7 +110,7 @@ export default function EngineeringControlCenter() {
             { id: 'overview', label: 'Production Overview & Risk' },
             { id: 'graph', label: 'Artifact & Knowledge Graph' },
             { id: 'agents', label: 'Autonomous Agent Runtime' },
-            { id: 'testing', label: 'Continuous Testing Feed' },
+            { id: 'testing', label: 'Continuous Multi-Lang Testing' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -93,7 +143,7 @@ export default function EngineeringControlCenter() {
               <div className="space-y-2 text-xs text-slate-400">
                 <div className="flex justify-between"><span>P99 Latency</span><span className="font-mono text-slate-200">42ms</span></div>
                 <div className="flex justify-between"><span>Error Rate</span><span className="font-mono text-emerald-400">0.001%</span></div>
-                <div className="flex justify-between"><span>Model Precision</span><span className="font-mono text-indigo-400">98.4%</span></div>
+                <div className="flex justify-between"><span>Supported Stacks</span><span className="font-mono text-indigo-400">Go, Py, TS, Java</span></div>
               </div>
             </div>
 
@@ -105,7 +155,7 @@ export default function EngineeringControlCenter() {
               </div>
               <div className="space-y-3 text-xs">
                 <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
-                  <div className="font-semibold text-slate-200">Deployment #142 (payment-service)</div>
+                  <div className="font-semibold text-slate-200">Deployment #142 (checkout-service)</div>
                   <div className="text-slate-400 mt-1">Commit: 7a8f9b | Container: sha256:e3b0...</div>
                 </div>
                 <div className="bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
@@ -138,7 +188,7 @@ export default function EngineeringControlCenter() {
           <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Database className="h-5 w-5 text-indigo-400" />
-              Engineering Knowledge Graph (17 Artifact Kinds Connected)
+              Engineering Knowledge Graph & Neo4j Exporter
             </h3>
             <p className="text-xs text-slate-400">
               GabraOS connects every Commit, Container, Model, Prompt, Incident, and Test into a unified reasoning graph.
@@ -166,9 +216,9 @@ export default function EngineeringControlCenter() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                { name: 'Testing Agent', role: 'Continuous Auto-Testing', status: 'Active', stage: 'Reasoning over root cause' },
+                { name: 'Testing Agent', role: 'Continuous Multi-Lang Testing', status: 'Active', stage: 'Synthesizing pytest / JUnit suites' },
                 { name: 'Security Agent', role: 'OPA Guardrail Enforcement', status: 'Active', stage: 'Evaluating OPA policy' },
-                { name: 'Observability Agent', role: 'Telemetry Analysis', status: 'Idle', stage: 'Subscribed to events' },
+                { name: 'Observability Agent', role: 'Telemetry & Loki Parser', status: 'Active', stage: 'Parsing error stack traces' },
                 { name: 'Incident Agent', role: 'Log & Trace Diagnosis', status: 'Active', stage: 'Listening for anomalies' },
               ].map((agent) => (
                 <div key={agent.name} className="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
@@ -186,20 +236,49 @@ export default function EngineeringControlCenter() {
           </div>
         )}
 
-        {/* TAB 4: CONTINUOUS TESTING FEED */}
+        {/* TAB 4: CONTINUOUS MULTI-LANG TESTING */}
         {activeTab === 'testing' && (
           <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Zap className="h-5 w-5 text-amber-400" />
-              Continuous Autonomous Testing Engine (Version 1)
-            </h3>
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-2">
-              <div className="text-emerald-400 font-bold">[AUTONOMOUS LOOP TRIGGERED]</div>
-              <div className="text-slate-400">1. Production Failure Received ➔ NullPointer in StripeWebhookHandler.go</div>
-              <div className="text-slate-400">2. Log Telemetry Analyzed ➔ Isolated root cause to payload missing 'customer_id'</div>
-              <div className="text-indigo-400 font-semibold">3. Synthesized Regression Test ➔ tests/autonomous/test_stripe_null_customer_id.go</div>
-              <div className="text-emerald-400">4. Test Verification: PASSED (Confidence Score: 98%)</div>
-              <div className="text-slate-300">5. Engineering Memory Updated ➔ Permanent hardening against future releases</div>
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Zap className="h-5 w-5 text-amber-400" />
+                Continuous Multi-Language Test Synthesizer
+              </h3>
+
+              {/* Language Selector Buttons */}
+              <div className="flex gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                {[
+                  { id: 'go', label: 'Go (testing)' },
+                  { id: 'python', label: 'Python (pytest)' },
+                  { id: 'typescript', label: 'TypeScript (Jest)' },
+                  { id: 'java', label: 'Java (JUnit 5)' },
+                ].map((lang) => (
+                  <button
+                    key={lang.id}
+                    onClick={() => setSelectedLang(lang.id as any)}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                      selectedLang === lang.id
+                        ? 'bg-indigo-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 space-y-3">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                <span className="text-indigo-400 font-bold flex items-center gap-2">
+                  <Code className="h-4 w-4" />
+                  Synthesized Regression Test Code ({selectedLang.toUpperCase()})
+                </span>
+                <span className="text-xs text-emerald-400 font-semibold">Confidence Score: 98%</span>
+              </div>
+              <pre className="text-slate-200 overflow-x-auto p-2 bg-slate-900/80 rounded-lg border border-slate-800 font-mono text-xs">
+                {codeSnippets[selectedLang]}
+              </pre>
             </div>
           </div>
         )}
