@@ -132,47 +132,45 @@ go build -o bin/gabra-api ./cmd/gabra-api
 ./bin/gabra agent list
 ```
 
-### 3. Run Continuous Autonomous Testing Cycle (Multi-Language)
-Synthesize regression test suites across **Go**, **Python** (`pytest`), **TypeScript** (`Jest`), and **Java** (`JUnit 5`):
+### 3. Synthesize AST-Aware Code Patch Diff (Zero-Downtime Hotfix)
+Automatically generate AST source code patch diffs (`.patch`) for Go, Python, TypeScript, or Java:
 
 ```bash
-# Synthesize Go regression test
-./bin/gabra test-autonomous --lang go
+# Generate Go AST code fix patch diff
+./bin/gabra patch-generate --lang go
 
-# Synthesize Python pytest suite
-./bin/gabra test-autonomous --lang python
+# Generate Python AST fix patch diff
+./bin/gabra patch-generate --lang python
 
-# Synthesize TypeScript Jest suite
-./bin/gabra test-autonomous --lang typescript
+# Generate TypeScript AST fix patch diff
+./bin/gabra patch-generate --lang typescript
 
-# Synthesize Java JUnit 5 suite
-./bin/gabra test-autonomous --lang java
+# Generate Java AST fix patch diff
+./bin/gabra patch-generate --lang java
 ```
 
-### 4. Export Knowledge Graph to Neo4j Cypher
+### 4. Execute Multi-Agent BFT Consensus Debate & Voting
+```bash
+./bin/gabra consensus-vote
+```
+
+### 5. Monitor AI Semantic Entropy & Vector Embedding Drift
+```bash
+./bin/gabra entropy-check
+```
+
+### 6. Export Knowledge Graph to Neo4j Cypher
 ```bash
 ./bin/gabra graph-export
 ```
 
-### 5. Start Core REST API Server
-```bash
-./bin/gabra-api
-```
-Available HTTP API Endpoints:
-- `GET /api/v1/health` — Platform health check
-- `GET /api/v1/status` — Platform & agent runtime status
-- `GET /api/v1/agents` — Registered autonomous agents list
-- `GET /api/v1/artifacts` — Knowledge graph artifacts
-- `GET /api/v1/testing/synthesize?lang=python` — Trigger multi-language test synthesis API
-- `GET /api/v1/graph/export` — Export Cypher script for Neo4j
-
-### 6. Run Engineering Control Center (Web)
+### 7. Run Engineering Control Center (Web)
 ```bash
 cd web
 npm install
 npm run dev
 ```
-Navigate to `http://localhost:3000` to inspect production health, multi-language test generation, the knowledge graph, and autonomous agent logs.
+Navigate to `http://localhost:3000` to inspect AST code patch diffs, multi-agent BFT consensus voting matrices, semantic entropy charts, and autonomous agent logs.
 
 ---
 
@@ -180,7 +178,7 @@ Navigate to `http://localhost:3000` to inspect production health, multi-language
 
 - [x] **v0.1 — Foundation**: CLI (`gabra`), API server (`gabra-api`), Event bus, 17 Artifact schema definitions, Agent runtime lifecycle, Continuous Testing flagship loop, Web control center.
 - [x] **v0.2 — Continuous Testing Expansion**: Production Loki & OTel log parser, multi-language regression test synthesizer (Go, Python, TS/Jest, Java), Cypher script generator, and Neo4j graph exporter.
-- [ ] **v0.3 — Observability**: OpenTelemetry bridge, prompt quality tracking, dataset freshness & embedding drift detector.
+- [x] **v0.3 — Novelty Engine & AI Observability**: AST-aware source code patch synthesizer (`.patch`), Multi-Agent BFT Consensus Engine, and Semantic Entropy Index & vector embedding drift tracking.
 - [ ] **v0.4 — Autonomous Reasoning**: Deployment confidence scoring, risk engine, autonomous canary rollouts.
 - [ ] **v0.5 — Ecosystem**: Plugin SDK (AWS, GCP, K8s, GitHub, OpenAI, MLflow), plugin marketplace.
 - [ ] **v1.0 — Autonomous Engineering Operating System**: Production-ready platform that continuously observes, tests, learns, secures, and optimizes software systems.

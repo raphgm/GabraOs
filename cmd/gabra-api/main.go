@@ -12,15 +12,20 @@ import (
 	"github.com/gabraos/gabraos/pkg/events"
 	"github.com/gabraos/gabraos/pkg/graph"
 	"github.com/gabraos/gabraos/pkg/learning"
+	"github.com/gabraos/gabraos/pkg/observability"
+	"github.com/gabraos/gabraos/pkg/synthesis"
 	"github.com/gabraos/gabraos/pkg/testing"
 )
 
 type Server struct {
-	bus     events.EventBus
-	kg      *graph.KnowledgeGraph
-	runtime *agents.Runtime
-	memory  *learning.EngineeringMemory
-	engine  *testing.ContinuousAutonomousTestingEngine
+	bus       events.EventBus
+	kg        *graph.KnowledgeGraph
+	runtime   *agents.Runtime
+	memory    *learning.EngineeringMemory
+	engine    *testing.ContinuousAutonomousTestingEngine
+	patcher   *synthesis.ASTPatchSynthesizer
+	bft       *agents.BFTConsensusEngine
+	entropy   *observability.SemanticEntropyEngine
 }
 
 func main() {
@@ -30,6 +35,9 @@ func main() {
 	rt := agents.NewRuntime(bus, kg)
 	mem := learning.NewEngineeringMemory()
 	testEngine := testing.NewContinuousAutonomousTestingEngine(bus, kg, mem)
+	astPatcher := synthesis.NewASTPatchSynthesizer()
+	consensusEngine := agents.NewBFTConsensusEngine()
+	entropyEngine := observability.NewSemanticEntropyEngine()
 
 	server := &Server{
 		bus:     bus,
@@ -37,6 +45,9 @@ func main() {
 		runtime: rt,
 		memory:  mem,
 		engine:  testEngine,
+		patcher: astPatcher,
+		bft:     consensusEngine,
+		entropy: entropyEngine,
 	}
 
 	mux := http.NewServeMux()
@@ -45,10 +56,13 @@ func main() {
 	mux.HandleFunc("/api/v1/agents", server.handleAgents)
 	mux.HandleFunc("/api/v1/artifacts", server.handleArtifacts)
 	mux.HandleFunc("/api/v1/testing/synthesize", server.handleSynthesize)
+	mux.HandleFunc("/api/v1/synthesis/patch", server.handlePatch)
+	mux.HandleFunc("/api/v1/consensus/evaluate", server.handleConsensus)
+	mux.HandleFunc("/api/v1/observability/entropy", server.handleEntropy)
 	mux.HandleFunc("/api/v1/graph/export", server.handleGraphExport)
 
 	addr := ":8080"
-	fmt.Printf("GabraOS Core API Server v0.2 starting on %s...\n", addr)
+	fmt.Printf("GabraOS Core API Server v0.3 starting on %s...\n", addr)
 	if err := http.ListenAndServe(addr, mux); err != nil {
 		fmt.Printf("Server failed: %v\n", err)
 	}
@@ -58,7 +72,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]string{
 		"status":    "Healthy",
-		"version":   "v0.2.0-autonomous",
+		"version":   "v0.3.0-autonomous",
 		"timestamp": time.Now().Format(time.RFC3339),
 	})
 }
@@ -66,12 +80,14 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"system":            "GabraOS",
-		"version":           "v0.2.0-autonomous",
-		"status":            "Operational",
-		"activeAgents":      len(s.runtime.ListAgents()),
-		"memoryIncidents":   s.memory.MemorySize(),
+		"system":             "GabraOS",
+		"version":            "v0.3.0-autonomous",
+		"status":             "Operational",
+		"activeAgents":       len(s.runtime.ListAgents()),
+		"memoryIncidents":    s.memory.MemorySize(),
 		"guardrailsEnforced": true,
+		"astPatchSynthesizer": true,
+		"bftConsensusQuorum": "75.0%",
 		"supportedLanguages": []string{"go", "python", "typescript", "java"},
 	})
 }
@@ -83,7 +99,7 @@ func (s *Server) handleAgents(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleArtifacts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	art1 := artifacts.NewArtifact("payment-service", artifacts.KindApplication, "v2.1.0", "team-checkout")
+	art1 := artifacts.NewArtifact("checkout-service", artifacts.KindApplication, "v2.1.0", "team-checkout")
 	art2 := artifacts.NewArtifact("stripe-webhook-handler", artifacts.KindContainer, "sha256:e3b0c442", "team-checkout")
 	_ = json.NewEncoder(w).Encode([]*artifacts.Artifact{art1, art2})
 }
@@ -108,6 +124,32 @@ func (s *Server) handleSynthesize(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = json.NewEncoder(w).Encode(synthesis)
+}
+
+func (s *Server) handlePatch(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	lang := r.URL.Query().Get("lang")
+	if lang == "" {
+		lang = "go"
+	}
+	patch, err := s.patcher.GeneratePatch("inc_prod_crash_142", "pkg/service/StripeWebhookHandler.go", "NullPointer dereference on customer_id", lang)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_ = json.NewEncoder(w).Encode(patch)
+}
+
+func (s *Server) handleConsensus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	matrix := s.bft.EvaluateProposal("dep_checkout_prod_v210", 15.0, 0)
+	_ = json.NewEncoder(w).Encode(matrix)
+}
+
+func (s *Server) handleEntropy(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	report := s.entropy.AnalyzeModelDrift("gpt-4o-mini-checkout-v2", "prm_system_checkout_flow_v21")
+	_ = json.NewEncoder(w).Encode(report)
 }
 
 func (s *Server) handleGraphExport(w http.ResponseWriter, r *http.Request) {
